@@ -14,6 +14,9 @@ app.get("/", (req, res) => {
 app.get("/admin-login.html", (req,res)=> {
     res.sendFile(path.join(__dirname, "../frontend/admin-login.html"));
 });
+app.get("/test", (req, res) => {
+    res.send("SERVER WORKING");
+});
 
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
