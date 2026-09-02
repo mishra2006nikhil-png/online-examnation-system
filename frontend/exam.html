@@ -398,35 +398,17 @@
 
             questions = data.map(function(q) {
 
-                let correctAnswer = "";
-
-
-                if (q.correct_option === "A") {
-                    correctAnswer = q.option_a;
-                }
-
-                else if (q.correct_option === "B") {
-                    correctAnswer = q.option_b;
-                }
-
-                else if (q.correct_option === "C") {
-                    correctAnswer = q.option_c;
-                }
-
-                else if (q.correct_option === "D") {
-                    correctAnswer = q.option_d;
-                }
-
+ let correctAnswer = q.answer;
 
                 return {
 
                     question: q.question,
 
                     options: [
-                        q.option_a,
-                        q.option_b,
-                        q.option_c,
-                        q.option_d
+                        q.option1,
+                        q.option2,
+                        q.option3,
+                        q.option4
                     ],
 
                     answer: correctAnswer
