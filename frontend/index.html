@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Online Examination System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #2563eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 55px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0f172a;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e293b;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            margin-bottom: 20px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .start-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .history-btn {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            padding: 14px;
+            border-radius: 10px;
+            border: 2px solid #2563eb;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .history-btn:hover {
+            background: #eff6ff;
+        }
+
+        .info {
+            margin-top: 25px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 10px;
+            color: #64748b;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="logo">🎓</div>
+
+    <h1>Online Examination</h1>
+
+    <p class="subtitle">
+        Secure • Simple • Smart Examination Portal
+    </p>
+
+    <h2>Student Login</h2>
+
+    <form id="loginForm">
+
+        <label for="name">Student Name</label>
+
+        <input
+            type="text"
+            id="name"
+            placeholder="Enter your full name"
+            required
+        >
+
+        <label for="email">Email Address</label>
+
+        <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            required
+        >
+
+        <button type="submit" class="start-btn">
+            Start Examination →
+        </button>
+
+    </form>
+
+    <a href="history.html" class="history-btn">
+        📊 View Result History
+    </a>
+
+    <div class="info">
+        ⏱️ Exam Duration: 5 Minutes<br>
+        📝 Total Questions: 3
+    </div>
+
+    <div class="footer">
+        © 2026 Online Examination System
+    </div>
+
+</div>
+
+
+<script>
+
+document.getElementById("loginForm")
+.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const name =
+        document.getElementById("name").value.trim();
+
+    const email =
+        document.getElementById("email").value.trim();
+
+
+    try {
+const response = await fetch(
+    "http://localhost:5000/login",
+    {
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            name: name,
+            email: email
+        })
+    }
+);
+
+
+        if (!response.ok) {
+
+            alert(
+                data.message ||
+                "Login failed"
+            );
+
+            return;
+        }
+
+
+        // Save student information
+
+        localStorage.setItem(
+            "student_id",
+            data.student_id
+        );
+
+        localStorage.setItem(
+            "student_name",
+            data.name
+        );
+
+
+        alert(
+            "Login successful! Welcome " +
+            data.name
+        );
+
+
+        // Start exam
+
+        window.location.href =
+            "exam.html";
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Login error:",
+            error
+        );
+
+        alert(
+            "Server se connection nahi ho raha."
+        );
+    }
+
+});
+
+</script>
+
+</body>
+</html>

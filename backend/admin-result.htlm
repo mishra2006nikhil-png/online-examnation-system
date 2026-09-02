@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>All Exam Results</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #2563eb);
+            padding: 30px 15px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+
+        .table-box {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+            padding: 14px;
+            text-align: center;
+        }
+
+        td {
+            padding: 13px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .pass {
+            color: #16a34a;
+            font-weight: bold;
+        }
+
+        .fail {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .message {
+            text-align: center;
+            margin: 25px;
+            color: #64748b;
+        }
+
+        .back {
+            display: block;
+            width: 180px;
+            margin: 30px auto 0;
+            padding: 12px;
+            text-align: center;
+            background: #64748b;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                padding: 20px 10px;
+            }
+
+            th, td {
+                padding: 10px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>📊 All Examination Results</h1>
+
+    <p class="subtitle">
+        Admin Result Management
+    </p>
+
+    <div class="table-box">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Email</th>
+                    <th>Exam ID</th>
+                    <th>Score</th>
+                    <th>Total</th>
+                    <th>Percentage</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody id="resultsTable">
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div id="message" class="message">
+        Loading results...
+    </div>
+
+    <a href="admin.html" class="back">
+        ← Back to Admin
+    </a>
+
+</div>
+
+
+<script>
+
+async function loadResults() {
+
+    try {
+
+        const response =
+            await fetch("http://localhost:5000/all-results");
+
+        const results =
+            await response.json();
+
+        const table =
+            document.getElementById("resultsTable");
+
+        const message =
+            document.getElementById("message");
+
+        table.innerHTML = "";
+
+        if (results.length === 0) {
+
+            message.textContent =
+                "No examination results available.";
+
+            return;
+        }
+
+        message.textContent =
+            `${results.length} result(s) found`;
+
+        results.forEach(function(result) {
+
+            const percentage =
+                Number(result.percentage);
+
+            const status =
+                percentage >= 40 ? "PASS" : "FAIL";
+
+            const statusClass =
+                percentage >= 40 ? "pass" : "fail";
+
+            const row =
+                document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${result.name}</td>
+
+                <td>${result.email}</td>
+
+                <td>${result.exam_id}</td>
+
+                <td>${result.score}</td>
+
+                <td>${result.total_questions}</td>
+
+                <td>${percentage.toFixed(2)}%</td>
+
+                <td class="${statusClass}">
+                    ${status}
+                </td>
+
+                <td>
+                    ${new Date(result.submitted_at).toLocaleString()}
+                </td>
+            `;
+
+            table.appendChild(row);
+
+        });
+
+    }
+
+    catch (error) {
+
+        console.error("Results loading error:", error);
+
+        document.getElementById("message").textContent =
+            "Results load nahi ho pa rahe hain.";
+
+    }
+
+}
+
+
+loadResults();
+
+</script>
+
+</body>
+
+</html>

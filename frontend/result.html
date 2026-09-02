@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Result</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            margin: 0;
+        }
+
+        .result-box {
+            width: 500px;
+            margin: 100px auto;
+            background: white;
+            padding: 35px;
+            text-align: center;
+            border-radius: 15px;
+            box-shadow: 0 0 15px #aaa;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        .score {
+            font-size: 30px;
+            font-weight: bold;
+            margin: 20px;
+        }
+
+        .details {
+            font-size: 18px;
+            line-height: 2;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            background: green;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="result-box">
+
+    <h1>🎉 Exam Result</h1>
+
+    <div class="score" id="score">
+        Score: 0 / 10
+    </div>
+
+    <div class="details">
+        <p id="correct">Correct Answers: 0</p>
+        <p id="wrong">Wrong Answers: 0</p>
+        <p id="percentage">Percentage: 0%</p>
+    </div>
+
+    <button onclick="goHome()">Back to Home</button>
+
+</div>
+
+<script>
+
+const score = Number(localStorage.getItem("score")) || 0;
+const total = Number(localStorage.getItem("totalQuestions")) || 10;
+
+const wrong = total - score;
+const percentage = Math.round((score / total) * 100);
+
+document.getElementById("score").innerText =
+    `Score: ${score} / ${total}`;
+
+document.getElementById("correct").innerText =
+    `Correct Answers: ${score}`;
+
+document.getElementById("wrong").innerText =
+    `Wrong Answers: ${wrong}`;
+
+document.getElementById("percentage").innerText =
+    `Percentage: ${percentage}%`;
+
+function goHome() {
+    window.location.href = "index.html";
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Online Examination</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #1e3a8a);
+            padding: 30px 15px;
+            color: #1e293b;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            margin: auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Header */
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .header h1 {
+            color: #0f172a;
+            font-size: 28px;
+        }
+
+        .student {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* Timer */
+
+        .timer-box {
+            background: #eff6ff;
+            color: #2563eb;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-weight: bold;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .timer-label {
+            font-size: 11px;
+            display: block;
+            margin-bottom: 4px;
+            color: #64748b;
+        }
+
+        #timer {
+            font-size: 22px;
+        }
+
+        /* Progress */
+
+        .progress-area {
+            margin-bottom: 25px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #progress {
+            height: 100%;
+            width: 33.33%;
+            background: #2563eb;
+            transition: width 0.3s;
+        }
+
+        /* Question */
+
+        .question-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        #quiz h2 {
+            font-size: 16px;
+            color: #2563eb;
+            margin-bottom: 15px;
+        }
+
+        #quiz p {
+            font-size: 21px;
+            font-weight: bold;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            color: #0f172a;
+        }
+
+        /* Options */
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            padding: 15px;
+            margin: 12px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .option:hover {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .option input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #2563eb;
+        }
+
+        /* Buttons */
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        button {
+            padding: 13px 22px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        #prevBtn {
+            background: #64748b;
+            color: white;
+        }
+
+        #prevBtn:hover {
+            background: #475569;
+        }
+
+        #nextBtn {
+            background: #2563eb;
+            color: white;
+        }
+
+        #nextBtn:hover {
+            background: #1d4ed8;
+        }
+
+        #submitBtn {
+            background: #dc2626;
+            color: white;
+        }
+
+        #submitBtn:hover {
+            background: #b91c1c;
+        }
+
+        /* Result */
+
+        #result {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            #quiz p {
+                font-size: 18px;
+            }
+
+            .buttons {
+                flex-wrap: wrap;
+            }
+
+            button {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <div class="container">
+
+        <!-- Header -->
+
+        <div class="header">
+
+            <div>
+                <h1>🎓 Online Examination</h1>
+
+                <div class="student">
+                    Student: <strong id="studentName">Student</strong>
+                </div>
+            </div>
+
+            <div class="timer-box">
+
+                <span class="timer-label">TIME REMAINING</span>
+
+                <span id="timer">05:00</span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Progress -->
+
+        <div class="progress-area">
+
+            <div class="progress-info">
+
+                <span id="questionNumber">
+                    Question 1 of 3
+                </span>
+
+                <span id="answeredCount">
+                    Answered: 0
+                </span>
+
+            </div>
+
+            <div class="progress-bar">
+
+                <div id="progress"></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Question -->
+
+        <div class="question-card">
+
+            <div id="quiz"></div>
+
+        </div>
+
+
+        <!-- Buttons -->
+
+        <div class="buttons">
+
+            <button id="prevBtn" onclick="previousQuestion()">
+                ← Previous
+            </button>
+
+            <button id="nextBtn" onclick="nextQuestion()">
+                Next →
+            </button>
+
+            <button id="submitBtn" onclick="submitExam()">
+                Submit Exam ✓
+            </button>
+
+        </div>
+
+
+        <div id="result"></div>
+
+    </div>
+
+
+<script>
+
+    /* =========================
+       VARIABLES
+    ========================= */
+
+    let questions = [];
+
+    let time = 300;
+
+    let currentQuestion = 0;
+
+    let userAnswers = [];
+
+    let examSubmitted = false;
+
+
+    /* =========================
+       STUDENT NAME
+    ========================= */
+
+    const studentName =
+        localStorage.getItem("student_name");
+
+    if (studentName) {
+
+        document.getElementById("studentName").textContent =
+            studentName;
+
+    }
+
+
+    /* =========================
+       LOAD QUESTIONS FROM MYSQL
+    ========================= */
+
+    async function loadQuestions() {
+
+        try {
+
+            const response =
+                await fetch("http://localhost:5000/questions");
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Questions load failed"
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            /*
+                Database format:
+
+                option_a
+                option_b
+                option_c
+                option_d
+                correct_option = A/B/C/D
+            */
+
+            questions = data.map(function(q) {
+
+                let correctAnswer = "";
+
+
+                if (q.correct_option === "A") {
+                    correctAnswer = q.option_a;
+                }
+
+                else if (q.correct_option === "B") {
+                    correctAnswer = q.option_b;
+                }
+
+                else if (q.correct_option === "C") {
+                    correctAnswer = q.option_c;
+                }
+
+                else if (q.correct_option === "D") {
+                    correctAnswer = q.option_d;
+                }
+
+
+                return {
+
+                    question: q.question,
+
+                    options: [
+                        q.option_a,
+                        q.option_b,
+                        q.option_c,
+                        q.option_d
+                    ],
+
+                    answer: correctAnswer
+
+                };
+
+            });
+
+
+            if (questions.length === 0) {
+
+                document.getElementById("quiz").innerHTML = `
+                    <p>No questions available.</p>
+                `;
+
+                document.getElementById("nextBtn").style.display =
+                    "none";
+
+                document.getElementById("submitBtn").style.display =
+                    "none";
+
+                return;
+
+            }
+
+
+            userAnswers = new Array(questions.length);
+
+            loadQuestion();
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Question loading error:",
+                error
+            );
+
+
+            document.getElementById("quiz").innerHTML = `
+                <p style="color:red;">
+                    Questions load nahi ho rahe.
+                </p>
+            `;
+
+        }
+
+    }
+
+
+    /* =========================
+       LOAD QUESTION
+    ========================= */
+
+    function loadQuestion() {
+
+        if (questions.length === 0) {
+            return;
+        }
+
+
+        const q =
+            questions[currentQuestion];
+
+
+        let html = `
+
+            <h2>
+                Question ${currentQuestion + 1}
+                of ${questions.length}
+            </h2>
+
+            <p>
+                ${q.question}
+            </p>
+
+        `;
+
+
+        q.options.forEach(function(option) {
+
+            let checked =
+                userAnswers[currentQuestion] === option
+                    ? "checked"
+                    : "";
+
+
+            html += `
+
+                <label class="option">
+
+                    <input
+                        type="radio"
+                        name="answer"
+                        value="${option}"
+                        ${checked}
+                    >
+
+                    <span>${option}</span>
+
+                </label>
+
+            `;
+
+        });
+
+
+        document.getElementById("quiz").innerHTML =
+            html;
+
+
+        /* Previous button */
+
+        document.getElementById("prevBtn").style.display =
+            currentQuestion === 0
+                ? "none"
+                : "inline-block";
+
+
+        /* Next button */
+
+        document.getElementById("nextBtn").style.display =
+            currentQuestion === questions.length - 1
+                ? "none"
+                : "inline-block";
+
+
+        /* Progress */
+
+        const progress =
+            ((currentQuestion + 1) / questions.length) * 100;
+
+
+        document.getElementById("progress").style.width =
+            progress + "%";
+
+
+        document.getElementById("questionNumber").textContent =
+            `Question ${currentQuestion + 1} of ${questions.length}`;
+
+
+        updateAnsweredCount();
+
+    }
+
+
+    /* =========================
+       SAVE ANSWER
+    ========================= */
+
+    function saveAnswer() {
+
+        const selected =
+            document.querySelector(
+                'input[name="answer"]:checked'
+            );
+
+
+        if (selected) {
+
+            userAnswers[currentQuestion] =
+                selected.value;
+
+        }
+
+
+        updateAnsweredCount();
+
+    }
+
+
+    /* =========================
+       ANSWER COUNT
+    ========================= */
+
+    function updateAnsweredCount() {
+
+        const count =
+            userAnswers.filter(
+                answer => answer !== undefined
+            ).length;
+
+
+        document.getElementById("answeredCount").textContent =
+            `Answered: ${count}`;
+
+    }
+
+
+    /* =========================
+       NEXT
+    ========================= */
+
+    function nextQuestion() {
+
+        saveAnswer();
+
+
+        if (
+            currentQuestion <
+            questions.length - 1
+        ) {
+
+            currentQuestion++;
+
+            loadQuestion();
+
+        }
+
+    }
+
+
+    /* =========================
+       PREVIOUS
+    ========================= */
+
+    function previousQuestion() {
+
+        saveAnswer();
+
+
+        if (currentQuestion > 0) {
+
+            currentQuestion--;
+
+            loadQuestion();
+
+        }
+
+    }
+
+
+    /* =========================
+       SUBMIT EXAM
+    ========================= */
+
+    async function submitExam() {
+
+        if (examSubmitted) {
+            return;
+        }
+
+
+        saveAnswer();
+
+
+        examSubmitted = true;
+
+
+        clearInterval(timerInterval);
+
+
+        /* Calculate score */
+
+        let score = 0;
+
+
+        questions.forEach(
+            function(question, index) {
+
+                if (
+                    userAnswers[index] ===
+                    question.answer
+                ) {
+
+                    score++;
+
+                }
+
+            }
+        );
+
+
+        const totalQuestions =
+            questions.length;
+
+
+        const percentage =
+            (score / totalQuestions) * 100;
+
+
+        /* Student ID */
+
+        const studentId =
+            localStorage.getItem("student_id");
+
+
+        if (!studentId) {
+
+            alert(
+                "Student login information not found."
+            );
+
+            examSubmitted = false;
+
+            return;
+
+        }
+
+
+        /* Save locally */
+
+        localStorage.setItem(
+            "score",
+            score
+        );
+
+        localStorage.setItem(
+            "totalQuestions",
+            totalQuestions
+        );
+
+
+        /* Save result in MySQL */
+
+        try {
+
+            const response =
+                await fetch(
+                    "http://localhost:5000/submit-result",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            student_id:
+                                Number(studentId),
+
+                            exam_id: 1,
+
+                            score:
+                                score,
+
+                            total_questions:
+                                totalQuestions,
+
+                            percentage:
+                                percentage
+
+                        })
+
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                alert(
+                    data.message ||
+                    "Result save nahi hua."
+                );
+
+                examSubmitted = false;
+
+                return;
+
+            }
+
+
+            console.log(
+                "Result saved:",
+                data
+            );
+
+
+            /* Go to result */
+
+            window.location.href =
+                "result.html";
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Result save error:",
+                error
+            );
+
+
+            alert(
+                "Result server par save nahi ho paaya."
+            );
+
+
+            examSubmitted = false;
+
+        }
+
+    }
+
+
+    /* =========================
+       TIMER
+    ========================= */
+
+    function updateTimer() {
+
+        let minutes =
+            Math.floor(time / 60);
+
+
+        let seconds =
+            time % 60;
+
+
+        document.getElementById("timer").textContent =
+
+            String(minutes).padStart(2, "0")
+            + ":"
+            + String(seconds).padStart(2, "0");
+
+
+        if (time <= 60) {
+
+            document.getElementById("timer").style.color =
+                "#dc2626";
+
+        }
+
+    }
+
+
+    const timerInterval =
+        setInterval(function() {
+
+            time--;
+
+            updateTimer();
+
+
+            if (time <= 0) {
+
+                clearInterval(timerInterval);
+
+                submitExam();
+
+            }
+
+        }, 1000);
+
+
+    /* =========================
+       START EXAM
+    ========================= */
+
+    updateTimer();
+
+    loadQuestions();
+
+</script>

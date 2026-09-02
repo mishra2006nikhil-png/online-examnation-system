@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Student Management</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #2563eb);
+            padding: 30px 15px;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        .top-card {
+            background: #eff6ff;
+            color: #1d4ed8;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .table-box {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+            padding: 14px;
+            text-align: center;
+        }
+
+        td {
+            padding: 14px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .delete-btn {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 9px 14px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .delete-btn:hover {
+            background: #b91c1c;
+        }
+
+        .back {
+            display: block;
+            width: 180px;
+            margin: 30px auto 0;
+            padding: 12px;
+            text-align: center;
+            background: #64748b;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 20px;
+            color: #64748b;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+    <h1>👥 Student Management</h1>
+
+    <p class="subtitle">
+        Manage registered students
+    </p>
+
+
+    <div class="top-card">
+
+        👨‍🎓 Total Students:
+        <span id="studentCount">0</span>
+
+    </div>
+
+
+    <div class="table-box">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Student Name</th>
+
+                    <th>Email</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="studentsTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <div id="message"
+         class="message">
+
+        Loading students...
+
+    </div>
+
+
+    <a href="admin.html"
+       class="back">
+
+        ← Back to Admin
+
+    </a>
+
+</div>
+
+
+
+<script>
+
+
+// =========================
+// LOAD STUDENTS
+// =========================
+
+async function loadStudents() {
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:5000/students"
+            );
+
+
+        const students =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                students.message ||
+                "Students load failed"
+            );
+
+        }
+
+
+        const table =
+            document.getElementById(
+                "studentsTable"
+            );
+
+
+        const count =
+            document.getElementById(
+                "studentCount"
+            );
+
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+
+        table.innerHTML = "";
+
+
+        count.textContent =
+            students.length;
+
+
+        if (students.length === 0) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="4">
+                        No students registered yet.
+                    </td>
+                </tr>
+            `;
+
+            message.textContent = "";
+
+            return;
+
+        }
+
+
+        message.textContent =
+            `${students.length} student(s) registered`;
+
+
+        students.forEach(function(student) {
+
+            const row =
+                document.createElement("tr");
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${student.id}
+                </td>
+
+                <td>
+                    ${student.name}
+                </td>
+
+                <td>
+                    ${student.email}
+                </td>
+
+                <td>
+
+                    <button
+                        class="delete-btn"
+                        onclick="deleteStudent(${student.id})"
+                    >
+                        🗑️ Delete
+                    </button>
+
+                </td>
+
+            `;
+
+
+            table.appendChild(row);
+
+        });
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Students error:",
+            error
+        );
+
+
+        document.getElementById(
+            "message"
+        ).textContent =
+            "Students load nahi ho pa rahe hain.";
+
+    }
+
+}
+
+
+
+// =========================
+// DELETE STUDENT
+// =========================
+
+async function deleteStudent(id) {
+
+
+    const confirmDelete =
+        confirm(
+            "Are you sure you want to delete this student?"
+        );
+
+
+    if (!confirmDelete) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:5000/students/" + id,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                data.message ||
+                "Student delete nahi hua."
+            );
+
+            return;
+
+        }
+
+
+        alert(
+            "✅ Student deleted successfully!"
+        );
+
+
+        loadStudents();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Delete student error:",
+            error
+        );
+
+
+        alert(
+            "Server se connection nahi ho raha."
+        );
+
+    }
+
+}
+
+
+
+// =========================
+// START
+// =========================
+
+loadStudents();
+
+</script>
+
+
+</body>
+
+</html>

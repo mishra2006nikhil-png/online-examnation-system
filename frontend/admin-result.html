@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Results</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #2563eb);
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0f172a;
+            margin-bottom: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f1f5f9;
+        }
+
+        .back {
+            display: block;
+            width: 180px;
+            margin: 25px auto 0;
+            padding: 12px;
+            text-align: center;
+            background: #64748b;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>📊 All Examination Results</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Result ID</th>
+                <th>Student ID</th>
+                <th>Exam ID</th>
+                <th>Score</th>
+                <th>Total</th>
+                <th>Percentage</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+
+        <tbody id="resultsTable">
+            <tr>
+                <td colspan="7">Loading...</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="admin.html" class="back">
+        ← Back to Admin
+    </a>
+
+</div>
+
+<script>
+
+fetch("http://localhost:5000/all-results")
+    .then(response => response.json())
+    .then(results => {
+
+        const table = document.getElementById("resultsTable");
+
+        table.innerHTML = "";
+
+        if (results.length === 0) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="7">No results found</td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        results.forEach(result => {
+
+            table.innerHTML += `
+                <tr>
+                    <td>${result.id}</td>
+                    <td>${result.student_id}</td>
+                    <td>${result.exam_id}</td>
+                    <td>${result.score}</td>
+                    <td>${result.total_questions}</td>
+                    <td>${result.percentage}%</td>
+                    <td>${result.submitted_at}</td>
+                </tr>
+            `;
+
+        });
+
+    })
+    .catch(error => {
+
+        console.error(error);
+
+        document.getElementById("resultsTable").innerHTML = `
+            <tr>
+                <td colspan="7">Failed to load results</td>
+            </tr>
+        `;
+
+    });
+
+</script>
+
+</body>
+</html>
