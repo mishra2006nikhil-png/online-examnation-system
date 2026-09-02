@@ -11,6 +11,9 @@ app.use(express.static(path.join(__dirname, "../frontend")));
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "../frontend/index.html"));
 });
+app.get("/admin-login.html", (req,res)=> {
+    res.sendFile(path.join(__dirname, "../frontend/admin-login.html"));
+});
 
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
