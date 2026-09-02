@@ -705,8 +705,11 @@
             questions.length;
 
 
-        const percentage =
-            (score / totalQuestions) * 100;
+      const percentage =
+    totalQuestions > 0
+        ? (score / totalQuestions) * 100
+        : 0;
+        
 
 
         /* Student ID */
