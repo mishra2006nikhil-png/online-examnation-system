@@ -202,7 +202,7 @@ async function loadStudents() {
 
         const response =
             await fetch(
-                "http://localhost:5000/students"
+                "/students"
             );
 
 
@@ -349,7 +349,7 @@ async function deleteStudent(id) {
 
         const response =
             await fetch(
-                "http://localhost:5000/students/" + id,
+                "/students/" + id,
                 {
                     method: "DELETE"
                 }

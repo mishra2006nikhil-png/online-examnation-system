@@ -370,7 +370,7 @@
         try {
 
             const response =
-                await fetch("http://localhost:5000/questions");
+                await fetch("/questions");
 
 
             if (!response.ok) {
@@ -747,7 +747,7 @@
 
             const response =
                 await fetch(
-                    "http://localhost:5000/submit-result",
+                    "/submit-result",
                     {
                         method: "POST",
 

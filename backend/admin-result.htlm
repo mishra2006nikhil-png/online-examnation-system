@@ -162,7 +162,7 @@ async function loadResults() {
     try {
 
         const response =
-            await fetch("http://localhost:5000/all-results");
+            await fetch("/all-results");
 
         const results =
             await response.json();

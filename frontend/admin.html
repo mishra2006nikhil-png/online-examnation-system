@@ -612,7 +612,7 @@ if (adminLoggedIn !== "true") {
            LOAD QUESTION COUNT
         ========================= */
 
-        fetch("http://localhost:5000/questions")
+        fetch("/questions")
 
         .then(response => response.json())
 
